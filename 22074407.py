@@ -6,4 +6,11 @@ def readCsv():
     df = pd.read_csv('Dataset/data7.csv')
     return df
 
-print(readCsv())
+def createPDF():
+    return None
+
+def CalculateMean():
+    return None
+
+def CalculateFraction():
+    return None 
