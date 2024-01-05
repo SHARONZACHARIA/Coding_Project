@@ -1,59 +1,44 @@
-import pandas as pd 
-import matplotlib.pyplot as plt 
-import numpy as np 
+import pandas as pd
+import matplotlib.pyplot as plt
+import numpy as np
 from scipy.stats import gaussian_kde
 
-path = 'Dataset/data7.csv'
-column_name = 'Annual_Salary'
+# Read data from CSV file
+data = pd.read_csv('Dataset/data7.csv',header=None,names=['Salary'])
 
-#Function to read dataset
-def readCsv(path,column_name):
-    df = pd.read_csv(path, names=[column_name])
-    df = df['Annual_Salary']
-    return df
+# Calculate probability density function using Gaussian KDE
+kde = gaussian_kde(data['Salary'], bw_method=0.5)  # Adjust bandwidth for KDE
 
-#Function for Probability Density Function
-def CalculateMeanAndPDF(data):
-    kde = gaussian_kde(data) 
-    min_val = min(data)
-    max_val = max(data)
-    x_vals = np.linspace(min_val, max_val, 1000)
-    pdf_values = kde.pdf(x_vals)
-    # Calculate mean using the data
-    mean = np.mean(data)
-    return x_vals, pdf_values, mean
+# Generate values for plotting PDF
+x_vals = np.linspace(data['Salary'].min(), data['Salary'].max(), 1000)
+pdf = kde.evaluate(x_vals)
 
-#Function to calculate fraction(X) of Population with salaries between 0.75W & W
-def CalculateFraction(data ,mean):
-    # Calculate the fraction of the population between 0.75W̃ and W̃
-    lower_bound = 0.75 * mean
-    upper_bound = mean
-    
-    # Calculate the fraction between 0.75W̃ and W̃ 
-    fraction = upper_bound - lower_bound
-    return fraction
+# Calculate mean annual salary
+mean_salary = np.mean(data['Salary'])
 
-#Function to Plot Histogram from PDF 
-def PlotHist(data,mean,fraction):
-    plt.figure(figsize=(8, 6))
-    plt.hist(data,bins=30 ,density=True, alpha=0.7, color='skyblue', edgecolor='black',label='Probability Density Function (PDF)')
-    plt.xlabel('Value')
-    plt.ylabel('Density')
-    plt.title('Probability Density Function')
-    plt.axvline(mean, color='red', linestyle='dashed', linewidth=1, label=f'Mean Salary ($W̃$): {mean:.2f}')
-    plt.axvline(fraction, color='green', linestyle='dashed', linewidth=1, label=f'X: {fraction:.2f}')
-    plt.text(0.5, 0.95, f'Mean Salary ($W̃$): {mean:.2f}', ha='center', va='center', transform=plt.gca().transAxes, color='red')
-    plt.text(0.5, 0.90, f'X: {fraction:.2f}', ha='center', va='center', transform=plt.gca().transAxes, color='green')
-    plt.legend()
-    plt.show()
-    
+# Define function to calculate required value 'X' (Example: 25th percentile)
+def calculate_X(percentile):
+    return np.percentile(data['Salary'], percentile)
 
-#Main Function 
-def AnalysePDF():
-    data = readCsv(path,column_name)
-    X_vals,pdf_vals,mean = CalculateMeanAndPDF(data)
-    fraction = CalculateFraction(data, mean)
-    PlotHist(data,mean,fraction)
+# Calculate the value of X (e.g., 25th percentile)
+X_value = calculate_X(25)
 
+# Plotting histogram and PDF
+plt.figure(figsize=(8, 6))
+plt.hist(data['Salary'], bins=30, density=True, alpha=0.7, label='Histogram')
+plt.plot(x_vals, pdf, label='Probability Density Function')
+plt.axvline(mean_salary, color='red', linestyle='--', label=f'Mean Salary: {mean_salary:.2f}')
+plt.axvline(X_value, color='green', linestyle='--', label=f'X value (25th percentile): {X_value:.2f}')
 
-AnalysePDF()
+plt.xlabel('Salary (Euros)')
+plt.ylabel('Density')
+plt.title('Probability Density Function of Salaries')
+plt.legend()
+
+# Display mean and X value on the plot
+plt.text(mean_salary, pdf.max() * 0.8, f'Mean: {mean_salary:.2f}', ha='right', color='red')
+plt.text(X_value, pdf.max() * 0.6, f'X: {X_value:.2f}', ha='right', color='green')
+
+# Show the plot
+plt.tight_layout()
+plt.show()
