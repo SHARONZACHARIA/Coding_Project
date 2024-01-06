@@ -1,7 +1,7 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
-from scipy.stats import gaussian_kde
+from scipy.stats import gaussian_kde 
 
 # Read data from CSV file
 data = pd.read_csv('Dataset/data7.csv',header=None,names=['Salary'])
@@ -23,6 +23,18 @@ def calculate_X(percentile):
 # Calculate the value of X (e.g., 25th percentile)
 X_value = calculate_X(25)
 
+
+def getStatisticalDescription(data):
+    mean = np.mean(data)
+    median = np.median(data)
+    mode = data.mode()
+    std = data.std()
+    kurtosis = data.kurtosis()
+    skewness = data.skew()
+    return  mean,mode,median, std,kurtosis,skewness
+
+
+
 # Plotting histogram and PDF
 plt.figure(figsize=(8, 6))
 plt.hist(data['Salary'], bins=30, density=True, alpha=0.7, label='Histogram')
@@ -42,3 +54,6 @@ plt.text(X_value, pdf.max() * 0.6, f'X: {X_value:.2f}', ha='right', color='green
 # Show the plot
 plt.tight_layout()
 plt.show()
+
+mean,mode,median, std,kurtosis,skewness = getStatisticalDescription(data['Salary'])
+print(f"mean : {mean}, mode : {mode}, median : {median}, std : {std}, kurtosis : {kurtosis}, skewness : {skewness}")
