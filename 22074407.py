@@ -14,14 +14,21 @@ x_vals = np.linspace(data['Salary'].min(), data['Salary'].max(), 1000)
 pdf = kde.evaluate(x_vals)
 
 # Calculate mean annual salary
+salaries = data['Salary']
 mean_salary = np.mean(data['Salary'])
+mean_salary = round(mean_salary, 2)
+lower_bound = 0.75 * mean_salary
+upper_bound = mean_salary
 
 # Define function to calculate required value 'X' (Example: 25th percentile)
-def calculate_X(percentile):
-    return np.percentile(data['Salary'], percentile)
+def calculate_Fraction(mean_salary):
+    # Calculate the fraction of population between 0.75W~ and W~
+    x_values = salaries[(salaries >= lower_bound) & (salaries <= upper_bound)]
+    fraction_population = len(x_values) / len(salaries)
+    fraction_population_rounded = round(fraction_population, 2)
+    return fraction_population_rounded
 
-# Calculate the value of X (e.g., 25th percentile)
-X_value = calculate_X(25)
+
 
 def getStatisticalDescription(data):
     mean = np.mean(data)
@@ -40,17 +47,19 @@ def getStatisticalDescription(data):
 plt.figure(figsize=(8, 6))
 plt.hist(data['Salary'], bins=30, density=True, alpha=0.7, label='Histogram',edgecolor='black')
 plt.plot(x_vals, pdf, label='Probability Density Function',)
-plt.axvline(mean_salary, color='red', linestyle='--', label=f'Mean Salary: {mean_salary:.2f}')
-plt.axvline(X_value, color='green', linestyle='--', label=f'X value (25th percentile): {X_value:.2f}')
+plt.axvline(mean_salary, color='red', linestyle='dashed', linewidth=2, label=f'Mean Salary ($\~{{W}}$): {mean_salary}')
+plt.axvspan(lower_bound, upper_bound, color='green', alpha=0.3, label=f'Population Fraction (X): {calculate_Fraction(mean_salary)}')
 
 plt.xlabel('Salary (Euros)')
 plt.ylabel('Density')
 plt.title('Probability Density Function of Salaries')
+plt.xlim(0,plt.xlim()[1])
+plt.ylim(0,plt.ylim()[1])
 plt.legend()
 
 # Display mean and X value on the plot
-plt.text(mean_salary, pdf.max() * 0.8, f'Mean: {mean_salary:.2f}', ha='right', color='red')
-plt.text(X_value, pdf.max() * 0.6, f'X: {X_value:.2f}', ha='right', color='green')
+# plt.text(mean_salary, pdf.max() * 0.8, f'Mean: {mean_salary:.2f}', ha='right', color='red')
+# plt.text(calculate_Fraction(mean_salary), pdf.max() * 0.6, f'X: {calculate_Fraction(mean_salary):.2f}', ha='right', color='green')
 
 # Show the plot
 plt.tight_layout()
