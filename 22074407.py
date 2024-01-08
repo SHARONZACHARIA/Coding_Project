@@ -23,7 +23,6 @@ def calculate_X(percentile):
 # Calculate the value of X (e.g., 25th percentile)
 X_value = calculate_X(25)
 
-
 def getStatisticalDescription(data):
     mean = np.mean(data)
     median = np.median(data)
@@ -31,14 +30,16 @@ def getStatisticalDescription(data):
     std = data.std()
     kurtosis = data.kurtosis()
     skewness = data.skew()
-    return  mean,mode,median, std,kurtosis,skewness
-
-
+    range = max(data) - min(data)
+    Q1 = np.percentile(data, 25)
+    Q3 = np.percentile(data, 75)
+    iqr = Q3 - Q1
+    return  mean,mode,median, std,kurtosis,skewness, range , max(data) , min(data) , iqr
 
 # Plotting histogram and PDF
 plt.figure(figsize=(8, 6))
-plt.hist(data['Salary'], bins=30, density=True, alpha=0.7, label='Histogram')
-plt.plot(x_vals, pdf, label='Probability Density Function')
+plt.hist(data['Salary'], bins=30, density=True, alpha=0.7, label='Histogram',edgecolor='black')
+plt.plot(x_vals, pdf, label='Probability Density Function',)
 plt.axvline(mean_salary, color='red', linestyle='--', label=f'Mean Salary: {mean_salary:.2f}')
 plt.axvline(X_value, color='green', linestyle='--', label=f'X value (25th percentile): {X_value:.2f}')
 
@@ -55,5 +56,5 @@ plt.text(X_value, pdf.max() * 0.6, f'X: {X_value:.2f}', ha='right', color='green
 plt.tight_layout()
 plt.show()
 
-mean,mode,median, std,kurtosis,skewness = getStatisticalDescription(data['Salary'])
-print(f"mean : {mean}, mode : {mode}, median : {median}, std : {std}, kurtosis : {kurtosis}, skewness : {skewness}")
+mean,mode,median, std,kurtosis,skewness, range  , maxV , minV , iqr = getStatisticalDescription(data['Salary'])
+print(f"mean : {mean}, mode is : {mode}, median : {median}, std : {std}, kurtosis : {kurtosis}, skewness : {skewness},Range : {range} , Max : {maxV} , Min : {minV} , IQR {iqr}")
