@@ -4,7 +4,7 @@ import numpy as np
 from scipy.stats import gaussian_kde 
 
 # Read data from CSV file
-data = pd.read_csv('Dataset/data7.csv',header=None,names=['Salary'])
+data = pd.read_csv('data7.csv',header=None,names=['Salary'])
 
 # Calculate probability density function using Gaussian KDE
 kde = gaussian_kde(data['Salary'], bw_method=0.5)  # Adjust bandwidth for KDE
@@ -66,7 +66,7 @@ def plotHist(data,mean_salary,pdf):
     plt.hist(data['Salary'], bins=30, density=True, alpha=0.7, label='Histogram',edgecolor='black')
     plt.plot(x_vals, pdf, label='Probability Density Function',)
     plt.axvline(mean_salary, color='red', linestyle='dashed', linewidth=2, label=f'Mean Salary ($\~{{W}}$): {mean_salary}')
-    plt.axvspan(lower_bound, upper_bound, color='green', alpha=0.3, label=f'Population Fraction (X): {calculate_Fraction(mean_salary)}')
+    plt.axvspan(lower_bound, upper_bound, color='green', alpha=0.3, label=f'Population Fraction (X): {calculate_Fraction(salaries)}')
     plt.xlabel('Salary (Euros)')
     plt.ylabel('Density')
     plt.title('Probability Density Function of Salaries')
