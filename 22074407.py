@@ -58,7 +58,6 @@ print(f"mean : {mean}, mode is : {mode}, median : {median}, std : {std}, kurtosi
 
 # Plotting histogram and PDF
 def plotHist(data,mean_salary,pdf):
-
     """
     Generates a Histogram with PDF , mean value and value of X 
     """
